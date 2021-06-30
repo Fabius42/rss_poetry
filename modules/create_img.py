@@ -5,10 +5,11 @@ from matplotlib.cbook import get_sample_data
 import random
 
 
-# Function poem_visualization
-# Input: poem headline, poem text, save path
+# Function make_image
+# Creates rasterized visualization of poem text
+# Input: Poem headline, poem text, save path
 # Output: None (saves image at specified location)
-def poem_visualization(poem_headline, poem_text, save_path):
+def make_image(poem_headline, poem_text):
 
     # Create image in specified size
     WIDTH = 800
@@ -40,20 +41,24 @@ def poem_visualization(poem_headline, poem_text, save_path):
     draw.text((50, 100), poem_headline, font=largeFont, fill=(255,255,255))
     draw.text((50, 200), poem_text, font=normalFont, fill=(255,255,255))
 
-    img.show()
 
-    input("Do you want to save your picture?")
-
+# Function save_image
+# Saves an image object at specified location
+# Input: Image object, savepath
+# Output: None
+def save_image(img, save_path):
     # Save the image at the specified filepath
     img.save(fp=save_path)
 
+# Function show_image
+# Shows an image object to the user
+# Input: Image object
+# Output: None
+def show_image(img):
+    # Show image to user
+    img.show()
 
+    
 
-#poem_visualization("Three aid workers who\nhad been", "The man who led the countrys Mars probe\nYou may see us cry\nbut the full extent of damage after a\n20-month journey\nWhy the Pentagon said\n\ncreated 2021-06-28", "C://Users//fdiet//Desktop//newsbot-master//testimg.jpg")
-
-
-# Emboss
-#img = img.filter(ImageFilter.EMBOSS)
-
-
+    
 

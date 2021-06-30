@@ -22,7 +22,7 @@ def main():
 
     # === USER MENU ===
     # Display welcome message
-    print("Welcome to Newsbot!")
+    print("Welcome to FreestyleNews!")
     print("This program generates a poem from today's Guardian news articles. You can select different 'moods' that the poem will be written in. These moods are based on specific books and capture the essence of those writings.")
 
     # Menu loop
@@ -51,20 +51,22 @@ def main():
             fictionModel = makeModelFromJson(modelChoice)
 
         # Generate custom number of poems
-        numPoems = 1
-        for i in range(numPoems):
+        NUM_POEMS = 1
+        for i in range(NUM_POEMS):
             # Create poem
             p = Poem(fictionModel, newsModel, modelChoice, fictionWeightFactor,
                      newsWeightFactor=autoWeightFactor(modelChoice, cleanNewsText))
-            # print poem to console
+            # Print poem to console
             print(p.read())
-            p.make_img("C://Users//fdiet\Desktop//newsbot-master//test.jpg")
 
-            # save poem dialog
+            #p.make_img("C://Users//fdiet//Documents//code//git//my-current-git-repos//freestylenews//test.jpg")
+
+            # Save poem dialog
             pleaseSave = True
             while pleaseSave == True:
-                saveChoice = input("Do you want to create a picture from your poem? [ y / n ]\n>")
+                saveChoice = input("Do you want to create a picture from your poem? (press 'y' or 'n')\n>")
                 if saveChoice.lower() == "y":
+                    p.show_poem_image()
                     saveFilename = input("\nChoose a filename to save your poem (e.g. filename.jpg)\n"
                                      "Press 'd' for the default filename 'poem.jpg':\n>")
                     if saveFilename.lower() == "d":
@@ -73,11 +75,12 @@ def main():
                         p.save(saveFilename)
                 pleaseSave = False
 
-        # exit of menu loop
-        pleaseContinue = input("\nDo you want to generate more poems? [y/n]\n>")
+        # Exit of menu loop
+        pleaseContinue = input("\nDo you want to generate more poems? (press 'y' or 'n')\n>")
         if pleaseContinue.lower() != "y":
             programActive = False
-    print("Have a good day!")
+    print("\nFreestyleNews is sad to stop already >:(")
+    print("Goodbye!")
 
 
 main()

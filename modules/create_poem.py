@@ -3,17 +3,75 @@
 import markovify
 import random
 import time
-from modules.create_img import poem_visualization
+from modules.create_img import make_image, save_image, show_image
 
-# initialize local time
+# Initialize local time
 LOCALTIME = time.localtime(time.time())
 
-# === FUNCTIONS ===
+# Function readJsonModel(modelChoice)
+# Reads pre-created JSON-model based on user-choice
+#   0 = Vanilla (no fiction, only news)
+#   1 = Dystopic (1984, Brave New World, Neuromancer)
+#   2 = Intellectual (Ulysses, Naked Lunch)
+#   3 = Abrahamic (Tora, Bible, Coran)
+#   4 = Erotic (Memoirs of Fanny Hill, 120 Days of Sodom, Tropical Cancer)
+# Input: int modelChoice(0-4) indicating desired model
+# Output: markov-model-object
+def readJsonModel(modelChoice):
+    if int(modelChoice) == 0:  # Vanilla
+        pass
+    if int(modelChoice) == 1:  # Dystopic
+        return readFile("models/dystopic-model.json")
+    if int(modelChoice) == 2:  # Intellectual
+        return readFile("models/intellectual-model.json")
+    if int(modelChoice) == 3:  # Abrahamic
+        return readFile("models/abrahamic-model.json")
+    if int(modelChoice) == 4:  # Erotic
+        return readFile("models/erotic-model.json")
 
-# function readFile
-# reads text file line by line
-# input: str inputFile name
-# output: str text
+# Function makeModel(inputText)
+# Creates markov-model-object based on text
+# Input: str inputText
+# Output: markov-model-object
+def makeModel(inputText):
+    markovModel = markovify.Text(inputText, state_size=2)
+    return markovModel
+
+# Function makeModelFromJson(modelChoice)
+# Creates markov-model-object based on preprocessed json-model
+# Input: int modelChoice
+# Output: markov-model-object
+def makeModelFromJson(modelChoice):
+    markovModel = markovify.Text.from_json(readJsonModel(modelChoice))
+    return markovModel
+
+# Function combineModels(model1, model2, weightFactor1, weightFactor2)
+# Combines two markov models with custom weight factors
+# Input: 2 markov-model-objects, 2 weight factor ints
+# Output: markov-model-object
+def combineModels(model1, model2, weightFactor1, weightFactor2):
+    modelCombo = markovify.combine([model1, model2], [weightFactor1, weightFactor2])
+    return modelCombo
+
+# Function autoWeightFactor
+# Computes equal weight factor for models based on their str size
+# This is necessary to balance the markovify algorithm between
+# the big volume of the fiction texts and the small amount of news text
+# Input: int modelChoice, str newsText
+# Output: int weightRatio
+def autoWeightFactor(modelChoice, newsText):
+    if modelChoice in range(1, 5):
+        fictionModelSize = len(readJsonModel(modelChoice))
+    else:  # Vanilla option
+        fictionModelSize = len(newsText)
+    newsModelSize = len(newsText)
+    weightRatio = round(int(fictionModelSize) / int(newsModelSize))
+    return weightRatio
+
+# Function readFile
+# Reads text file line by line
+# Input: str inputFile name
+# Output: str text
 def readFile(inputFile):
     fileIn = open(inputFile, "r", encoding="utf-8")
     text = ""
@@ -21,75 +79,12 @@ def readFile(inputFile):
         text += line
     return text
 
-# function readJsonModel(modelChoice)
-# reads pre-created JSON-model based on user-choice
-#   0 = vanilla (no fiction, only news)
-#   1 = dystopic (1984, Brave New World, Neuromancer)
-#   2 = intellectual (Ulysses, Naked Lunch)
-#   3 = abrahamic (Tora, Bible, Coran)
-#   4 = erotic (Memoirs of Fanny Hill, 120 Days of Sodom, Tropical Cancer)
-# input: int modelChoice(0-4) indicating desired model
-# output: markov-model-object
-def readJsonModel(modelChoice):
-    if int(modelChoice) == 0:  # vanilla
-        pass
-        # return vanillaChoice
-    if int(modelChoice) == 1:  # dystopic
-        return readFile("models/dystopic-model.json")
-    if int(modelChoice) == 2:  # intellectual
-        return readFile("models/intellectual-model.json")
-    if int(modelChoice) == 3:  # abrahamic
-        return readFile("models/abrahamic-model.json")
-    if int(modelChoice) == 4:  # erotic
-        return readFile("models/erotic-model.json")
 
-# function makeModel(inputText)
-# creates markov-model-object based on text
-# input: str inputText
-# output: markov-model-object
-def makeModel(inputText):
-    markovModel = markovify.Text(inputText, state_size=2)
-    return markovModel
-
-# function makeModelFromJson(modelChoice)
-# creates markov-model-object based on preprocessed json-model
-# input: int modelChoice
-# output: markov-model-object
-def makeModelFromJson(modelChoice):
-    markovModel = markovify.Text.from_json(readJsonModel(modelChoice))
-    return markovModel
-
-# function combineModels(model1, model2, weightFactor1, weightFactor2)
-# combines two markov models with custom weight factors
-# input: 2 markov-model-objects, 2 weight factor ints
-# output: markov-model-object
-def combineModels(model1, model2, weightFactor1, weightFactor2):
-    modelCombo = markovify.combine([model1, model2], [weightFactor1, weightFactor2])
-    return modelCombo
-
-# function autoWeightFactor
-# computes equal weight factor for models based on their str size
-# this is necessary to balance the markovify algorithm between
-# the big volume of the fiction texts and the small amount of news text
-# input: int modelChoice, str newsText
-# output: int weightRatio
-def autoWeightFactor(modelChoice, newsText):
-    if modelChoice in range(1, 5):
-        fictionModelSize = len(readJsonModel(modelChoice))
-    else:  # vanilla option
-        fictionModelSize = len(newsText)
-    newsModelSize = len(newsText)
-    weightRatio = round(int(fictionModelSize) / int(newsModelSize))
-    return weightRatio
-
-
-# === CLASS ===
-
-# class Poem
-# creates unique poem object based on model(s) and weight factor(s)
-# attributes:
+# Class Poem
+# Creates unique poem object based on model(s) and weight factor(s)
+# Attributes:
 #   2 model-objects, 2 int weight-factor, int modelChoice, str poemHeader, str poemText, str creationTime
-# methods:
+# Methods:
 #   makePoemText (creates poem text with varying length based on models and weights)
 #   makePoemHeader (creates poem header with varying length based on models and weights)
 #   __str__ (prints formatted poem information containing header, text and creation time)
@@ -102,25 +97,26 @@ class Poem(object):
         self.__newsWeightFactor = newsWeightFactor
         self.__poemHeader = self.makePoemHeader()
         self.__poemText = self.makePoemText()
+        self.__poemImage = self.make_poem_image()
         self.__creationTime = str(LOCALTIME[0]) + "-" + str(LOCALTIME[1]) + "-" + str(LOCALTIME[2])
         self.__modelChoice = modelChoice
 
     def makePoemText(self):
         comboModel = combineModels(self.__modelObject1, self.__modelObject2,
                                    self.__fictionWeightFactor, self.__newsWeightFactor)
-        # random poem length (3-5 units)
+        # Random poem length (3-5 units)
         poemLength = random.randrange(3, 6)
-        # make poem text with varying length and formatting
+        # Make poem text with varying length and formatting
         poemText = ""
         for i in range(poemLength):
             createdText = comboModel.make_short_sentence(80)
-            # checking for AttributeError
+            # Checking for AttributeError
             while createdText is None:
                 createdText = comboModel.make_sentence()
             poemText += createdText
-        # introduces line breaks depending on punctuation
+        # Introduces line breaks depending on punctuation
         formattedPoemText = poemText.replace(",", "\n").replace(".", "\n").replace("\n\n", "\n")
-        # introduces line breaks depending on line-length
+        # Introduces line breaks depending on line-length
         poemLineList = formattedPoemText.split("\n")
         poemWordLineList = []
         for line in poemLineList:
@@ -129,7 +125,7 @@ class Poem(object):
         for line in poemWordLineList:
             i = 0
             for word in line:
-                if i > 10:  # max amount of words in any line of poem
+                if i > 10:  # Maximum amount of words in any line of poem
                     word += "\n"
                     formattedPoemText += word
                 else:
@@ -142,15 +138,15 @@ class Poem(object):
     def makePoemHeader(self):
         comboModel = combineModels(self.__modelObject1, self.__modelObject2,
                                    self.__fictionWeightFactor, self.__newsWeightFactor)
-        # make poem header
+        # Make poem header
         headerText = ""
-        for i in range(5):  # creates solid amount of text to avoid IndexError
+        for i in range(5):  # Creates big amount of text to avoid IndexError
             createdHeader = comboModel.make_sentence()
-            # checking for AttributeError
+            # Checking for AttributeError
             while createdHeader is None:
                 createdHeader = comboModel.make_sentence()
             headerText += createdHeader
-        # varying length with random (2-6 words)
+        # Varying length with random (2-6 words)
         headerText = headerText.replace(",", "").replace(".", "")
         listOfHeaderWords = headerText.split()
         poemHeader = ""
@@ -160,13 +156,13 @@ class Poem(object):
         return poemHeader
 
     def read(self):
-        # formatting poem header
+        # Formatting poem header
         poemHeader = self.__poemHeader
         underscore = ""
         for char in poemHeader:
             underscore += "-"
         poemHeader = poemHeader + "\n" + underscore + "\n"
-        # putting poem together
+        # Putting poem together
         formattedPoem = "\n" + poemHeader + "\n" + self.__poemText + "\ncreated " + self.__creationTime + "\n"
         return formattedPoem
 
@@ -183,8 +179,12 @@ class Poem(object):
         print("--- poem successfully saved. ---")
         fileOut.close()
 
-    def make_img(self, save_path):
-        poem_visualization(self.__poemHeader, self.__poemText, save_path)
+    def make_poem_image(self):
+        make_image(self.__poemHeader, self.__poemText)
+
+    def show_poem_image(self):
+        self.show_image(self.__poemImage)
 
     def getCreationTime(self):
         return self.__creationTime
+
