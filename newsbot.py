@@ -61,18 +61,18 @@ def main():
 
             #p.make_img("C://Users//fdiet//Documents//code//git//my-current-git-repos//freestylenews//test.jpg")
 
-            # Save poem dialog
+            # Image creation and image save dialog
             pleaseSave = True
             while pleaseSave == True:
-                saveChoice = input("Do you want to create a picture from your poem? (press 'y' or 'n')\n>")
-                if saveChoice.lower() == "y":
+                create_image_choice = input("Do you want to create a picture from your poem? (press 'y' or 'n')\n>")
+                if create_image_choice.lower() == "y":
                     p.show_poem_image()
-                    saveFilename = input("\nChoose a filename to save your poem (e.g. filename.jpg)\n"
+                    save_filename = input("\nChoose a filename to save your poem (e.g. filename.jpg)\n"
                                      "Press 'd' for the default filename 'poem.jpg':\n>")
-                    if saveFilename.lower() == "d":
-                        p.save("poems.jpg")
+                    if save_filename.lower() == "d":
+                        p.save("saved-images/poems.jpg")
                     else:
-                        p.save(saveFilename)
+                        p.save("saved-images/" + save_filename)
                 pleaseSave = False
 
         # Exit of menu loop

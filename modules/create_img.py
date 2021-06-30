@@ -41,6 +41,8 @@ def make_image(poem_headline, poem_text):
     draw.text((50, 100), poem_headline, font=largeFont, fill=(255,255,255))
     draw.text((50, 200), poem_text, font=normalFont, fill=(255,255,255))
 
+    return img
+
 
 # Function save_image
 # Saves an image object at specified location

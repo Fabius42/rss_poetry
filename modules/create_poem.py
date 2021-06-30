@@ -132,7 +132,7 @@ class Poem(object):
                     word += " "
                     formattedPoemText += word
                 i += 1
-            formattedPoemText += "\n"
+        formattedPoemText += "\n"
         return formattedPoemText
 
     def makePoemHeader(self):
@@ -170,7 +170,9 @@ class Poem(object):
         msg = Poem.read(self)
         return msg
 
-    def save(self, csvFileName):
+    def save(self, save_path):
+        save_image(self.__poemImage, save_path)
+        """
         fileOut = open(csvFileName, mode="a")
         poemCsvLine = self.__creationTime + "," + str(self.__modelChoice) + "," +\
                       self.__poemHeader + "," + self.__poemText
@@ -178,12 +180,14 @@ class Poem(object):
         print(poemCsvLine, file=fileOut)
         print("--- poem successfully saved. ---")
         fileOut.close()
+        """
 
     def make_poem_image(self):
-        make_image(self.__poemHeader, self.__poemText)
+        img = make_image(self.__poemHeader, self.__poemText)
+        return img
 
     def show_poem_image(self):
-        self.show_image(self.__poemImage)
+        show_image(self.__poemImage)
 
     def getCreationTime(self):
         return self.__creationTime
