@@ -81,16 +81,17 @@ def readFile(inputFile):
 
 
 # Class Poem
-# Creates unique poem object based on model(s) and weight factor(s)
+# Creates unique poem object based on markov model(s) and weight factor(s)
 # Attributes:
-#   2 model-objects, 2 int weight-factor, int modelChoice, str poemHeader, str poemText, str creationTime
-# Methods:
-#   makePoemText (creates poem text with varying length based on models and weights)
-#   makePoemHeader (creates poem header with varying length based on models and weights)
-#   __str__ (prints formatted poem information containing header, text and creation time)
-#   save (writes poem text to csv with timestamp and indication of fiction model used)
+# - Two model objects (json files containing markov associations)
+# - Two int weight-factors (determine how much of each model influences the poem)
+# - int modelChoice (which model 0-4 the user chose)
+# - str poemHeader (the headline of the poem)
+# - str poemText (the body of the poem)
+# - str creationTime (the time when the poem was created)
 class Poem(object):
-    def __init__(self, modelObject1, modelObject2, modelChoice, fictionWeightFactor, newsWeightFactor):
+    def __init__(self, modelObject1, modelObject2, modelChoice, 
+                fictionWeightFactor, newsWeightFactor):
         self.__modelObject1 = modelObject1
         self.__modelObject2 = modelObject2
         self.__fictionWeightFactor = fictionWeightFactor
@@ -101,6 +102,8 @@ class Poem(object):
         self.__creationTime = str(LOCALTIME[0]) + "-" + str(LOCALTIME[1]) + "-" + str(LOCALTIME[2])
         self.__modelChoice = modelChoice
 
+    # Method makePoemText
+    # Creates poem text with varying length based on models and weights
     def makePoemText(self):
         comboModel = combineModels(self.__modelObject1, self.__modelObject2,
                                    self.__fictionWeightFactor, self.__newsWeightFactor)
@@ -135,6 +138,8 @@ class Poem(object):
         formattedPoemText += "\n"
         return formattedPoemText
 
+    # Method makePoemHeader
+    # Creates poem header with varying length based on models and weights
     def makePoemHeader(self):
         comboModel = combineModels(self.__modelObject1, self.__modelObject2,
                                    self.__fictionWeightFactor, self.__newsWeightFactor)
@@ -154,41 +159,37 @@ class Poem(object):
         for i in range(poemLength):
             poemHeader += listOfHeaderWords[i] + " "
         return poemHeader
-
-    def read(self):
-        # Formatting poem header
+    
+    # Method __str__
+    # Prints formatted poem containing header, text and creation time
+    def __str__(self):
+        # Underscoring poem header
         poemHeader = self.__poemHeader
         underscore = ""
         for char in poemHeader:
             underscore += "-"
         poemHeader = poemHeader + "\n" + underscore + "\n"
-        # Putting poem together
+        # Adding poem text below the header
         formattedPoem = "\n" + poemHeader + "\n" + self.__poemText + "\ncreated " + self.__creationTime + "\n"
         return formattedPoem
 
-    def __str__(self):
-        msg = Poem.read(self)
-        return msg
-
+    # Method save
+    # Saves poem jpg image to specified location
     def save(self, save_path):
         save_image(self.__poemImage, save_path)
-        """
-        fileOut = open(csvFileName, mode="a")
-        poemCsvLine = self.__creationTime + "," + str(self.__modelChoice) + "," +\
-                      self.__poemHeader + "," + self.__poemText
-        poemCsvLine = repr(poemCsvLine).strip("'\"")
-        print(poemCsvLine, file=fileOut)
-        print("--- poem successfully saved. ---")
-        fileOut.close()
-        """
 
+    # Method make_poem_image
+    # Creates poem image
     def make_poem_image(self):
         img = make_image(self.__poemHeader, self.__poemText)
         return img
 
+    # Method show_poem_image
+    # Shows poem image to user
     def show_poem_image(self):
         show_image(self.__poemImage)
 
+    # Method getCreationTime
+    # Returns poem creation time
     def getCreationTime(self):
         return self.__creationTime
-

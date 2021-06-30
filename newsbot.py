@@ -57,9 +57,7 @@ def main():
             p = Poem(fictionModel, newsModel, modelChoice, fictionWeightFactor,
                      newsWeightFactor=autoWeightFactor(modelChoice, cleanNewsText))
             # Print poem to console
-            print(p.read())
-
-            #p.make_img("C://Users//fdiet//Documents//code//git//my-current-git-repos//freestylenews//test.jpg")
+            print(p)
 
             # Image creation and image save dialog
             pleaseSave = True
