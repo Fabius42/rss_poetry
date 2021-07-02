@@ -143,7 +143,6 @@ class Poem(object):
         self.__poemHeader = self.makePoemHeader()
         self.__poemText = self.makePoemText()
         self.__poemImage = self.make_poem_image()
-        self.__creationTime = str(LOCALTIME[0]) + "-" + str(LOCALTIME[1]) + "-" + str(LOCALTIME[2])
         self.__modelChoice = modelChoice
 
 
@@ -186,6 +185,10 @@ class Poem(object):
             formattedPoemText = formattedPoemText[:10]
         formattedPoemText = "\n".join(formattedPoemText)
         formattedPoemText += "\n"
+
+        # Add current date
+        formattedPoemText += "\ncreated " + str(LOCALTIME[0]) + "-" + str(LOCALTIME[1]) + "-" + str(LOCALTIME[2])
+
         return formattedPoemText
 
 
@@ -224,7 +227,7 @@ class Poem(object):
             underscore += "-"
         poemHeader = poemHeader + "\n" + underscore + "\n"
         # Adding poem text below the header
-        formattedPoem = "\n" + poemHeader + "\n" + self.__poemText + "\ncreated " + self.__creationTime + "\n"
+        formattedPoem = "\n" + poemHeader + "\n" + self.__poemText + "\n"
         return formattedPoem
 
 
