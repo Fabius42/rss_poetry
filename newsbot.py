@@ -56,21 +56,23 @@ def main():
             # Create poem
             p = Poem(fictionModel, newsModel, modelChoice, fictionWeightFactor,
                      newsWeightFactor=autoWeightFactor(modelChoice, cleanNewsText))
-            # Print poem to console
+            # Print poem to console and show the image
             print(p)
+            p.show_poem_image()
 
-            # Image creation and image save dialog
+            # Image save dialog
             pleaseSave = True
             while pleaseSave == True:
-                create_image_choice = input("Do you want to create a picture from your poem? (press 'y' or 'n')\n>")
-                if create_image_choice.lower() == "y":
-                    p.show_poem_image()
+                save_image_choice = input("Do you want to save your poem picture? (press 'y' or 'n')\n>")
+                if save_image_choice.lower() == "y":
                     save_filename = input("\nChoose a filename to save your poem (e.g. filename.jpg)\n"
                                      "Press 'd' for the default filename 'poem.jpg':\n>")
                     if save_filename.lower() == "d":
                         p.save("saved-images/poems.jpg")
+                        print("Poem saved as 'poem.jpg' in folder /saved-images")
                     else:
                         p.save("saved-images/" + save_filename)
+                        print("Poem saved as '" + save_filename + "' in folder '/saved-images'")
                 pleaseSave = False
 
         # Exit of menu loop

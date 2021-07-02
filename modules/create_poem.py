@@ -80,6 +80,53 @@ def readFile(inputFile):
     return text
 
 
+
+# Function breakLine
+# Breaks up a line into segments that are shorter than a given char count
+# Input: str line consisting of words and spaces
+# Output: str short_lines holding shortened lines separated by newlines
+def breakLine(line, max_length):
+    # Initialize variables
+    short_line = ""
+    remainder = ""
+    char_counter = 0
+    short_lines = ""
+
+    # Break up the line into a short line, and a remainder
+    word_list = line.split(" ")
+    for word in word_list:
+        char_counter += len(word)
+        # Before adding a word, check whether the line would get too long
+        if char_counter <= max_length:
+            short_line += word
+            short_line += " "
+            char_counter += 1 # account for white space
+        else:
+            # Otherwise, add the word to the remainder portion
+            remainder += word
+            remainder += " "
+    #print('Short Line: ' + short_line)
+    #print('Remainder: ' + remainder)
+    short_lines += short_line + "\n"
+
+    # If the remainder is still too long, break it down recursively
+    if len(remainder) > max_length:
+        remainderLines = breakLine(remainder, max_length)
+        short_lines += breakLine(remainder, max_length)
+    # Otherwise, if the remainder is less than the maximum length, just add it
+    else:
+        short_lines += remainder + "\n"
+
+    return short_lines
+    
+
+
+# current problem of breakLine function:
+# - title too long (needs to be shortened / wrapped)
+# - concatenate the poem text to a maximum of 10 lines and add the date
+
+
+
 # Class Poem
 # Creates unique poem object based on markov model(s) and weight factor(s)
 # Attributes:
@@ -107,9 +154,9 @@ class Poem(object):
     def makePoemText(self):
         comboModel = combineModels(self.__modelObject1, self.__modelObject2,
                                    self.__fictionWeightFactor, self.__newsWeightFactor)
-        # Random poem length (3-5 units)
+
+        # Make poem text with varying length (3-5 units)
         poemLength = random.randrange(3, 6)
-        # Make poem text with varying length and formatting
         poemText = ""
         for i in range(poemLength):
             createdText = comboModel.make_short_sentence(80)
@@ -117,26 +164,37 @@ class Poem(object):
             while createdText is None:
                 createdText = comboModel.make_sentence()
             poemText += createdText
-        # Introduces line breaks depending on punctuation
-        formattedPoemText = poemText.replace(",", "\n").replace(".", "\n").replace("\n\n", "\n")
-        # Introduces line breaks depending on line-length
-        poemLineList = formattedPoemText.split("\n")
-        poemWordLineList = []
-        for line in poemLineList:
-            poemWordLineList.append(line.split(" "))
+        # Introduce line breaks depending on punctuation
+        # This replaces commas and dots with newlines, and reduces two newlines to one
+        poemText = poemText.replace(",", "\n").replace(".", "\n").replace("\n\n", "\n")
+        poemText.replace("\n\n", "\n")
+        
+        print(poemText)
+        
+        # Break up lines that are too long
+        MAX_LINE_LENGTH = 35
+        poemLineList = poemText.split("\n")
         formattedPoemText = ""
-        for line in poemWordLineList:
-            i = 0
-            for word in line:
-                if i > 10:  # Maximum amount of words in any line of poem
-                    word += "\n"
-                    formattedPoemText += word
-                else:
-                    word += " "
-                    formattedPoemText += word
-                i += 1
+        for line in poemLineList:
+            # If a line is longer than the maximum length, break it up recursively
+            if len(line) > MAX_LINE_LENGTH:
+                formattedPoemText += breakLine(line, MAX_LINE_LENGTH) + "\n"
+                """
+                broken_up_line = breakLine(line, MAX_LINE_LENGTH)
+                formattedPoemText += broken_up_line[0] + "\n"
+                # If the remainder is still too long, break it up again
+                if len(broken_up_line[1]) > MAX_LINE_LENGTH:
+                    broken_up_line = breakLine(line, MAX_LINE_LENGTH)
+                    formattedPoemText += broken_up_line[0] + "\n"
+                    formattedPoemText += broken_up_line[1] + "\n"
+                """
+            # If a line is short, just keep it
+            else:
+                formattedPoemText += line + "\n"
+
         formattedPoemText += "\n"
         return formattedPoemText
+          
 
     # Method makePoemHeader
     # Creates poem header with varying length based on models and weights
@@ -193,3 +251,4 @@ class Poem(object):
     # Returns poem creation time
     def getCreationTime(self):
         return self.__creationTime
+
