@@ -79,13 +79,12 @@ def readFile(inputFile):
         text += line
     return text
 
-
-
 # Function breakLine
 # Breaks up a line into segments that are shorter than a given char count
 # Input: str line consisting of words and spaces
 # Output: str short_lines holding shortened lines separated by newlines
 def breakLine(line, max_length):
+
     # Initialize variables
     short_line = ""
     remainder = ""
@@ -105,8 +104,6 @@ def breakLine(line, max_length):
             # Otherwise, add the word to the remainder portion
             remainder += word
             remainder += " "
-    #print('Short Line: ' + short_line)
-    #print('Remainder: ' + remainder)
     short_lines += short_line + "\n"
 
     # If the remainder is still too long, break it down recursively
@@ -119,13 +116,6 @@ def breakLine(line, max_length):
 
     return short_lines
     
-
-
-# current problem of breakLine function:
-# - title too long (needs to be shortened / wrapped)
-# - concatenate the poem text to a maximum of 10 lines and add the date
-
-
 
 # Class Poem
 # Creates unique poem object based on markov model(s) and weight factor(s)
@@ -169,8 +159,6 @@ class Poem(object):
         poemText = poemText.replace(",", "\n").replace(".", "\n").replace("\n\n", "\n")
         poemText.replace("\n\n", "\n")
         
-        print(poemText)
-        
         # Break up lines that are too long
         MAX_LINE_LENGTH = 35
         poemLineList = poemText.split("\n")
@@ -179,22 +167,19 @@ class Poem(object):
             # If a line is longer than the maximum length, break it up recursively
             if len(line) > MAX_LINE_LENGTH:
                 formattedPoemText += breakLine(line, MAX_LINE_LENGTH) + "\n"
-                """
-                broken_up_line = breakLine(line, MAX_LINE_LENGTH)
-                formattedPoemText += broken_up_line[0] + "\n"
-                # If the remainder is still too long, break it up again
-                if len(broken_up_line[1]) > MAX_LINE_LENGTH:
-                    broken_up_line = breakLine(line, MAX_LINE_LENGTH)
-                    formattedPoemText += broken_up_line[0] + "\n"
-                    formattedPoemText += broken_up_line[1] + "\n"
-                """
             # If a line is short, just keep it
             else:
                 formattedPoemText += line + "\n"
 
+        # Poems have a maximum length of 10 lines because of visual layouting
+        # Therefore, throw away all lines that go beyond that
+        formattedPoemText = formattedPoemText.split("\n")
+        if len(formattedPoemText) > 10:
+            formattedPoemText = formattedPoemText[:10]
+        formattedPoemText = "\n".join(formattedPoemText)
         formattedPoemText += "\n"
         return formattedPoemText
-          
+
 
     # Method makePoemHeader
     # Creates poem header with varying length based on models and weights
