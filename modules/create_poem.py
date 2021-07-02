@@ -8,6 +8,7 @@ from modules.create_img import make_image, save_image, show_image
 # Initialize local time
 LOCALTIME = time.localtime(time.time())
 
+
 # Function readJsonModel(modelChoice)
 # Reads pre-created JSON-model based on user-choice
 #   0 = Vanilla (no fiction, only news)
@@ -29,6 +30,7 @@ def readJsonModel(modelChoice):
     if int(modelChoice) == 4:  # Erotic
         return readFile("models/erotic-model.json")
 
+
 # Function makeModel(inputText)
 # Creates markov-model-object based on text
 # Input: str inputText
@@ -36,6 +38,7 @@ def readJsonModel(modelChoice):
 def makeModel(inputText):
     markovModel = markovify.Text(inputText, state_size=2)
     return markovModel
+
 
 # Function makeModelFromJson(modelChoice)
 # Creates markov-model-object based on preprocessed json-model
@@ -45,6 +48,7 @@ def makeModelFromJson(modelChoice):
     markovModel = markovify.Text.from_json(readJsonModel(modelChoice))
     return markovModel
 
+
 # Function combineModels(model1, model2, weightFactor1, weightFactor2)
 # Combines two markov models with custom weight factors
 # Input: 2 markov-model-objects, 2 weight factor ints
@@ -52,6 +56,7 @@ def makeModelFromJson(modelChoice):
 def combineModels(model1, model2, weightFactor1, weightFactor2):
     modelCombo = markovify.combine([model1, model2], [weightFactor1, weightFactor2])
     return modelCombo
+
 
 # Function autoWeightFactor
 # Computes equal weight factor for models based on their str size
@@ -68,6 +73,7 @@ def autoWeightFactor(modelChoice, newsText):
     weightRatio = round(int(fictionModelSize) / int(newsModelSize))
     return weightRatio
 
+
 # Function readFile
 # Reads text file line by line
 # Input: str inputFile name
@@ -78,6 +84,7 @@ def readFile(inputFile):
     for line in fileIn:
         text += line
     return text
+
 
 # Function breakLine
 # Breaks up a line into segments that are shorter than a given char count
@@ -139,6 +146,7 @@ class Poem(object):
         self.__creationTime = str(LOCALTIME[0]) + "-" + str(LOCALTIME[1]) + "-" + str(LOCALTIME[2])
         self.__modelChoice = modelChoice
 
+
     # Method makePoemText
     # Creates poem text with varying length based on models and weights
     def makePoemText(self):
@@ -194,15 +202,18 @@ class Poem(object):
             while createdHeader is None:
                 createdHeader = comboModel.make_sentence()
             headerText += createdHeader
-        # Varying length with random (2-6 words)
+        # Randomly vary header length (2-6 words)
         headerText = headerText.replace(",", "").replace(".", "")
         listOfHeaderWords = headerText.split()
         poemHeader = ""
-        poemLength = random.randrange(2, 7)
-        for i in range(poemLength):
-            poemHeader += listOfHeaderWords[i] + " "
+        headerLength = random.randrange(2, 7)
+        for i in range(headerLength):
+            # Keep length of poem header at maximum 25 characters for layout reasons
+            if (len(poemHeader) + len(listOfHeaderWords[i])) <= 25:
+                poemHeader += listOfHeaderWords[i] + " "
         return poemHeader
     
+
     # Method __str__
     # Prints formatted poem containing header, text and creation time
     def __str__(self):
@@ -216,10 +227,12 @@ class Poem(object):
         formattedPoem = "\n" + poemHeader + "\n" + self.__poemText + "\ncreated " + self.__creationTime + "\n"
         return formattedPoem
 
+
     # Method save
     # Saves poem jpg image to specified location
     def save(self, save_path):
         save_image(self.__poemImage, save_path)
+
 
     # Method make_poem_image
     # Creates poem image
@@ -227,10 +240,12 @@ class Poem(object):
         img = make_image(self.__poemHeader, self.__poemText)
         return img
 
+
     # Method show_poem_image
     # Shows poem image to user
     def show_poem_image(self):
         show_image(self.__poemImage)
+
 
     # Method getCreationTime
     # Returns poem creation time
