@@ -16,11 +16,16 @@ def main():
     # === USER MENU ===
 
     # Display welcome message
-    print("Welcome to rss_poetry!")
-    print("This program generates a poem from today's news articles or another custom RSS source. You can select different 'moods' that the poem will be written in. These moods are based on specific books and capture the essence of those writings.")
+    print("Welcome to RSS_POETRY!\n")
+    print("╔═══╦═══╦═══╗╔═══╦═══╦═══╦════╦═══╦╗──╔╗")
+    print("║╔═╗║╔═╗║╔═╗║║╔═╗║╔═╗║╔══╣╔╗╔╗║╔═╗║╚╗╔╝║")
+    print("║╔╗╔╩══╗╠══╗║║╔══╣║─║║╔══╝─║║─║╔╗╔╝╚╗╔╝")
+    print("║║║╚╣╚═╝║╚═╝║║║──║╚═╝║╚══╗─║║─║║║╚╗─║║")
+    print("╚╝╚═╩═══╩═══╝╚╝──╚═══╩═══╝─╚╝─╚╝╚═╝─╚╝")
+    print("\nThis program generates a poem from today's news articles or another custom RSS source. You can select different 'moods' that the poem will be written in. These moods are based on specific books and capture the essence of those writings.")
 
     # Let user choose between different newspaper URLs or their own RSS URL
-    url_choice = input("Select RSS text source:"
+    url_choice = input("\nSelect an RSS text source:"
                         "\n\t1 = Guardian"
                         "\n\t2 = New York Times"
                         "\n\t3 = BBC"
@@ -62,7 +67,7 @@ def main():
         # Choose type of markov model
         modelChoice = None
         while modelChoice not in range(1, 6):  # User input error checking
-            modelChoice = input("Select desired poem mood:"
+            modelChoice = input("\nSelect a desired poem mood:"
                                 "\n\t1 = Generic (only based on news, no books taken into account)"
                                 "\n\t2 = Dystopic (1984, Brave New World, Neuromancer)"
                                 "\n\t3 = Intellectual (Ulysses, Naked Lunch)"
@@ -110,7 +115,7 @@ def main():
         pleaseContinue = input("\nDo you want to generate more poems? (press 'y' or 'n')\n>")
         if pleaseContinue.lower() != "y":
             programActive = False
-    print("\nThanks for using rss_poetry!\n(written by Fabian Dietrich in 2019)")
+    print("\nThanks for using RSS_POETRY!\n(written by Fabian Dietrich in 2019)")
 
 
 
