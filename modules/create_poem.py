@@ -19,15 +19,15 @@ LOCALTIME = time.localtime(time.time())
 # Input: int modelChoice(0-4) indicating desired model
 # Output: markov-model-object
 def readJsonModel(modelChoice):
-    if int(modelChoice) == 0:  # Vanilla
+    if int(modelChoice) == 1:  # Vanilla
         pass
-    if int(modelChoice) == 1:  # Dystopic
+    if int(modelChoice) == 2:  # Dystopic
         return readFile("models/dystopic-model.json")
-    if int(modelChoice) == 2:  # Intellectual
+    if int(modelChoice) == 3:  # Intellectual
         return readFile("models/intellectual-model.json")
-    if int(modelChoice) == 3:  # Abrahamic
+    if int(modelChoice) == 4:  # Abrahamic
         return readFile("models/abrahamic-model.json")
-    if int(modelChoice) == 4:  # Erotic
+    if int(modelChoice) == 5:  # Erotic
         return readFile("models/erotic-model.json")
 
 
@@ -65,7 +65,7 @@ def combineModels(model1, model2, weightFactor1, weightFactor2):
 # Input: int modelChoice, str newsText
 # Output: int weightRatio
 def autoWeightFactor(modelChoice, newsText):
-    if modelChoice in range(1, 5):
+    if modelChoice in range(2, 6):
         fictionModelSize = len(readJsonModel(modelChoice))
     else:  # Vanilla option
         fictionModelSize = len(newsText)

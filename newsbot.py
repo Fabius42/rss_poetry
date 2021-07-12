@@ -5,9 +5,7 @@ import time
 from modules.process_rss import getRSS, cleanText
 from modules.create_poem import makeModel, makeModelFromJson, autoWeightFactor, Poem
 
-# === INPUT VARIABLES ===
-# // Fill in any RSS-readable web resource //
-url = "https://www.theguardian.com/world/rss"
+
 # // Change weight factor //
 # Higher (e.g. 10) -> fiction texts are more dominant
 # Lower (e.g. 0.1) -> news text has more weight
@@ -15,28 +13,61 @@ fictionWeightFactor = 1
 
 
 def main():
+    # === USER MENU ===
+
+    # Display welcome message
+    print("Welcome to rss_poetry!")
+    print("This program generates a poem from today's news articles or another custom RSS source. You can select different 'moods' that the poem will be written in. These moods are based on specific books and capture the essence of those writings.")
+
+    # Let user choose between different newspaper URLs or their own RSS URL
+    url_choice = input("Select RSS text source:"
+                        "\n\t1 = Guardian"
+                        "\n\t2 = New York Times"
+                        "\n\t3 = BBC"
+                        "\n\t4 = LA Times"
+                        "\n\t5 = Custom (Enter your own RSS url)"
+                        "\n>")
+    if url_choice == "2":
+        url = "https://feeds.simplecast.com/54nAGcIl" # NY Times
+    elif url_choice == "3":
+        url = "https://feeds.bbci.co.uk/news/world/rss.xml" # BBC
+    elif url_choice == "4":
+        url = "https://www.latimes.com/world/rss2.0.xml" # LA Times
+
+    # Custom user URL
+    elif url_choice == "5":
+        url = input("Please enter your custom URL of a RSS source:\n>")
+        url_is_valid = test_url(url)
+        # Error checking
+        while url_is_valid == False:
+            print("rss_poetry can't find RSS text at the provided URL.\n")
+            url = input("Please enter your custom URL of a RSS source:\n>")
+            url_is_valid = test_url(url)
+        print("Valid URL found.")
+
+    # Default catch-all case "1" and if user mistyped / just pressed "enter"
+    else:
+        url = "https://www.theguardian.com/world/rss" # Guardian
+
+
     # Retrieve rss and make a markov model out of the cleaned text
     newsText = getRSS(url)
     cleanNewsText = cleanText(newsText)
     newsModel = makeModel(cleanNewsText)
 
-    # === USER MENU ===
-    # Display welcome message
-    print("Welcome to FreestyleNews!")
-    print("This program generates a poem from today's Guardian news articles. You can select different 'moods' that the poem will be written in. These moods are based on specific books and capture the essence of those writings.")
 
-    # Menu loop
+    # Menu loop allows to repeatedly generate poems
     programActive = True
     while programActive:
         # Choose type of markov model
         modelChoice = None
-        while modelChoice not in range(0, 5):  # User input error checking
-            modelChoice = input("Enter number for desired poem mood:"
-                                "\n\t0 = Generic (only based on news, no books taken into account)"
-                                "\n\t1 = Dystopic (1984, Brave New World, Neuromancer)"
-                                "\n\t2 = Intellectual (Ulysses, Naked Lunch)"
-                                "\n\t3 = Abrahamic (Tanakh, Bible, Quran)"
-                                "\n\t4 = Erotic (Memoirs of Fanny Hill, 120 Days of Sodom, Tropical Cancer)"
+        while modelChoice not in range(1, 6):  # User input error checking
+            modelChoice = input("Select desired poem mood:"
+                                "\n\t1 = Generic (only based on news, no books taken into account)"
+                                "\n\t2 = Dystopic (1984, Brave New World, Neuromancer)"
+                                "\n\t3 = Intellectual (Ulysses, Naked Lunch)"
+                                "\n\t4 = Abrahamic (Tanakh, Bible, Quran)"
+                                "\n\t5 = Erotic (Memoirs of Fanny Hill, 120 Days of Sodom, Tropical Cancer)"
                                 "\n>")
             try:
                 modelChoice = int(modelChoice)
@@ -45,7 +76,7 @@ def main():
 
         # Generate unique markov model and blend it with current news
         print("\nGenerating poem with chosen mood...")
-        if modelChoice == 0:  # The generic option means that no book texts are taken into account
+        if modelChoice == 1:  # The generic option means that no book texts are taken into account
             fictionModel = newsModel
         else:  # In all other cases (1-4) the news model is blended with a fiction model
             fictionModel = makeModelFromJson(modelChoice)
@@ -79,8 +110,23 @@ def main():
         pleaseContinue = input("\nDo you want to generate more poems? (press 'y' or 'n')\n>")
         if pleaseContinue.lower() != "y":
             programActive = False
-    print("\nFreestyleNews is sad to stop already >:(")
-    print("Goodbye!")
+    print("\nThanks for using rss_poetry!\n(written by Fabian Dietrich in 2019)")
+
+
+
+# Function test_url
+# Tests for a given URL whether a markov model
+# can be made from RSS text
+# Input: URL
+# Output: Boolean
+def test_url(url):
+    try:
+        newsText = getRSS(url)
+        cleanNewsText = cleanText(newsText)
+        newsModel = makeModel(cleanNewsText)
+        return True
+    except:
+        return False
 
 
 main()
