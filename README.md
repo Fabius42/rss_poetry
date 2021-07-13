@@ -1,32 +1,28 @@
-# newsbot
-a python3 program that reads RSS news feeds and blends them with works of fiction to create free-form poetry, sent to specified email recipient(s). newsbot is live at [thepoetrybot.com](http://www.thepoetrybot.com) where you can also subscribe to a free news-poem newsletter.
+# RSS_Poetry
+**Blend online news feeds with works of literature on the command-line to create and visualize surprising poems**
+- Choose which online news or other RSS sources to use as starting point
+- Choose between different poetic "moods" (dystopic, abrahamic, intellectual, or erotic)
+- Save your poem as easily-shareable 800x600px image
+- Train your own markov model based on custom literature texts
 
-## required modules
-the following modules are required:
-* feedparser
-* bs4
-* markovify
+<img src="https://github.com/Fabius42/zoom_enhance/blob/master/saved_images/nobody-knew.jpg" width=600>
 
-## set-up
-if you want to send the newsbot-output via mail, you need to add your email address and password in the `mailconfig.txt` file in the specified lines.
+## How to Run
+1. Clone the repository
+2. Make sure you have the following modules installed:
+	- feedparser
+	- pillow
+	- bs4
+	- markovify
+3. Run rss_poetry.py (requires Python 3)
 
-## how it works
-newsbot consists of three parts: RSS parsing, poem generation, and sending of the result(s).
-1. parse RSS
-* get RSS headlines from web (via feedparser)
-* clean news texts (remove html tags and odd symbols via BeautifulSoup)
-2. create poem
-* create markov-model based on news-text (via markovify)
-* read pre-created JSON-model of fiction texts
-* combine the two models with custom weight factor
-3. send poem
-* get email-metainformation (recipient, formatting, etc.) from user
-* send poem email with informative header via a Gmail account (via smtplib and email)
-  
-## advanced usage
-### custom text generation models
-in its present configuration, newsbot only uses four pre-configured JSON-models for the fiction part of the poem generation. to add different flavors to the output, new JSON models can be created with the supplied class `JsonModule` from the file `jsonModule.py`.
-### other RSS source feeds
-change the variable `url` (line 12 in `newsbot.py`) to any RSS source you want to use for poem generation.
-### different weight fiction vs RSS text
-change the variable `fictionWeightFactor` (line 16 in `newsbot.py`) to any positive rational number. for numbers higher than 1, the chosen fiction text gets more weight; for numbers lower than 1, the news text is more dominant. this variable acts as multiplicator for the output of the function `autoWeightFactor`, which balances the text bodies of fiction and news texts by default equally.
+<img src="https://github.com/Fabius42/zoom_enhance/blob/master/saved_images/command-line.jpg" width=500>
+
+## Custom Text Generation Models
+I generated four pre-configured JSON-models that set different poetic "moods" because they contain different vocabulary words and phrases. If you have a selection of literary works that you are passionate about, or want to play with, you can create your own JSON-models with the class `JsonModule` in the file `json_model_.py`. Just change the variables in line 13-14 and run the file.
+
+## Fine-tuning the Poem Generator
+If you choose to blend RSS text with a fiction model (versus the "generic" option that doesn't take fiction text into account), the poem generator uses a weight to decide "how much" of each of these text sources will show in the resulting poem. Currently, the weight is set to a balanced position that creates poems that have a discernible "mood" while also making strong references to the provided RSS texts. You can change the variable `fictionWeightFactor` (line 17 in `rss_poetry.py`) to any positive rational number. For numbers higher than 1, the chosen fiction text gets more weight; for numbers lower than 1, the news text is more dominant.
+
+<img src="https://github.com/Fabius42/zoom_enhance/blob/master/saved_images/but-us.jpg" width=600>
+<img src="https://github.com/Fabius42/zoom_enhance/blob/master/saved_images/google-fined.jpg" width=600>
