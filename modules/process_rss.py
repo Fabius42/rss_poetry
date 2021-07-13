@@ -1,4 +1,7 @@
-# === MODULE PROCESS_RSS ===
+# === RSS_POETRY RSS TEXT PROCESSING ===
+
+# This file contains the functions to retrieve RSS text with the module
+# Feedparser, and clean the internet text with the module BeautifulSoup.
 
 import feedparser
 from bs4 import BeautifulSoup

@@ -1,7 +1,11 @@
+# === RSS_POETRY IMAGE CREATION ===
+
+# This file contains the functions for generating pixel images out of
+# poem text. The module PIL is used to draw a background of random ellipses, blur
+# them, draw text over them, and then display and save the resulting image.
+
 import PIL
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-import matplotlib.pyplot as plt
-from matplotlib.cbook import get_sample_data
 import random
 
 

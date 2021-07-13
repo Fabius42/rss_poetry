@@ -1,31 +1,31 @@
-# JSON-MODEL
+# === RSS_POETRY JSON MODEL ===
+
+# This file contains the class JsonModel that uses the module Markovify
+# to create custom markov models. I used this file to assemble my different
+# fiction text models out of several .txt files, and saved them as .json files.
+# You just need to specify the two variables in the main function, and run the file.
 
 import markovify
 
-# === INPUT VARIABLES ===
 
 def main():
-    modelName = "custom"  # put a descriptive name here
-    textList = ["text1.txt", "text2.txt", "text3.txt"]  # put the titles of txt files here
-
+    # Set model name, and provide one or more text files with their paths
+    modelName = "custom"
+    textList = ["text1.txt", "text2.txt", "text3.txt"]
+    # Create a combined markov model out of them and save it as .json
     j = JsonModel(modelName, textList)
     j.make()
 
 
-# === CLASS ===
-
-# class JsonModel
-# creates a json-file based on input-text(s) and a user-given model-name
-#   the class is not included in the main program, because it only needs to run once
-#   (when new models are created) this is useful due to performance-reasons
-#   (it is faster to read in a pre-created json-file, than to do all the
-#   computation operations for every request); however, it can be used
-#   to generate new custom models to explore other literary / poetic genres
-# attributes:
-#   textList (list of text-files in directory), str modelName
-# methods:
-#   textClean (cleans texts from textList)
-#   make (creates json-model out of all combined texts)
+# Class JsonModel
+# Creates a json-file based on input-text(s) and a user-given model-name.
+# The class is not included in the main program, because it only needs to run once
+# (when new models are created). This is useful due to performance-reasons. This
+# class can be used by advanced users to generate new custom models to explore
+# other literary or poetic genres.
+# Attributes:
+# - list of text-file paths
+# - str modelName (name of the resulting model)
 class JsonModel(object):
     def __init__(self, modelName, textList):
         self.__modelName = modelName

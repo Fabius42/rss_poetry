@@ -1,4 +1,9 @@
-# === MODULE CREATE_POEM ===
+# === RSS_POETRY POEM CREATION ===
+
+# This file contains the Poem class that creates poems out of RSS texts
+# and different fiction texts with the module Markovify. The recursive
+# breakLine function fits the arbitrary-length lines of the generated
+# poems to the layout requirements of the resulting image dimensions.
 
 import markovify
 import random

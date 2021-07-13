@@ -1,14 +1,19 @@
-# === NEWSBOT MAIN PROGRAM ===
+# === RSS_POETRY MENU ===
+
+# This file contains the menu loop of rss_poetry that asks the user to
+# choose between different URLs for retrieving RSS texts, and how they
+# want to blend this text with different fiction text models.
+# The user can also choose to save generated poems.
 
 import time
-
+import sys
 from modules.process_rss import getRSS, cleanText
 from modules.create_poem import makeModel, makeModelFromJson, autoWeightFactor, Poem
 
 
 # // Change weight factor //
-# Higher (e.g. 10) -> fiction texts are more dominant
-# Lower (e.g. 0.1) -> news text has more weight
+# Higher (e.g. 10) -> fiction text models are more dominant
+# Lower (e.g. 0.1) -> rss text has more weight
 fictionWeightFactor = 1
 
 
@@ -55,11 +60,15 @@ def main():
         url = "https://www.theguardian.com/world/rss" # Guardian
 
 
-    # Retrieve rss and make a markov model out of the cleaned text
-    newsText = getRSS(url)
-    cleanNewsText = cleanText(newsText)
-    newsModel = makeModel(cleanNewsText)
-
+    # Try to retrieve RSS text and make a markov model out of the cleaned text
+    # If it doesn't work it is likely due to no internet access
+    try:
+        newsText = getRSS(url)
+        cleanNewsText = cleanText(newsText)
+        newsModel = makeModel(cleanNewsText)
+    except:
+        print("Error! Not able to retrieve RSS text. Connect to the internet and try again.")
+        sys.exit()
 
     # Menu loop allows to repeatedly generate poems
     programActive = True
